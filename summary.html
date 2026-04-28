@@ -10,8 +10,10 @@
     <p>Name: <span id="display-name"></span></p>
     <p>Product: <span id="display-variant"></span></p>
     <p>Quantity: <span id="display-quantity"></span></p>
+    <p>Total Amount: <span id="display-total"></span></p>
     <p>Pickup Method: <span id="display-pickup"></span></p>
     <p>Address: <span id="display-address"></span></p>
+    <p>Thank you for pre-ordering!</p>
 </body>
 <script>
   window.onload = function() {
@@ -39,7 +41,14 @@
     var quan = getCookie("userQuantity");
     var pickup = getCookie("userPickup");
     var address = getCookie("userAddress");
+    var total = 0;
 
+      if(variant="value1"){
+          total= Number(quan)*20;
+      }else{
+          total=Number(quan)*25;
+      }
+        
     document.getElementById("display-name").innerText = name;
     document.getElementById("display-variant").innerText = variant;
     document.getElementById("display-quantity").innerText = quan;
