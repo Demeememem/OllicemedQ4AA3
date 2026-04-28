@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Pre-Order Summary</h1>
+    <p>Name: <span id="display-name"></span></p>
+    <p>Product: <span id="display-variant"></span></p>
+    <p>Quantity: <span id="display-quantity"></span></p>
+    <p>Pickup Method: <span id="display-pickup"></span></p>
+    <p>Address: <span id="display-address"></span></p>
+</body>
+<script>
+  window.onload = function() {
+    loadPreviousOrder();
+  };
+
+ 
+
+    function getCookie(name) {
+        var cookies = document.cookie.split("; ");
+        for (var i = 0; i < cookies.length; i++) {
+        var parts = cookies[i].split("=");
+        if (parts[0] === name) {
+            return parts[1]; 
+            }
+        }
+         return null;
+   
+    }
+
+  function loadPreviousOrder() {
+    
+    var name = getCookie("userName");
+    var variant = getCookie("userVariant");
+    var quan = getCookie("userQuantity");
+    var pickup = getCookie("userPickup");
+    var address = getCookie("userAddress");
+
+    document.getElementById("display-name").innerText = name;
+    document.getElementById("display-variant").innerText = variant;
+    document.getElementById("display-quantity").innerText = quan;
+    document.getElementById("display-pickup").innerText = pickup;
+    document.getElementById("display-address").innerText = address;
+  
+    }
+
+</script>
+</html>

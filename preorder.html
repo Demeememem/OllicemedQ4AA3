@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pre-Order Form</title>
+  <style>
+    body {
+      font-family: Arial;
+      background-color: #f4f4f4;
+    }
+
+
+    .container {
+      width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 50px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+
+    input, select {
+      width: 95%;
+      padding: 8px;
+      margin: 8px 0;
+    }
+
+
+    #terms {
+      width: 10%;
+    }
+
+
+    button {
+      padding: 10px;
+      width: 100%;
+      margin-top: 5px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+
+    .error {
+      color: red;
+      margin-bottom: 10px;
+      min-height: 18px;
+    }
+  </style>
+</head>
+
+
+<body>
+
+
+<div class="container">
+  <h2>UV-Alert Patches Pre-Order</h2>
+  <!--Patches that can detect when UV rays gets too harmful-->
+
+  <!-- Error Message Area -->
+  <div id="errorMsg" class="error"></div>
+
+
+  <form onsubmit="return handleOrder(event)">
+   
+    <label>Name:</label>
+    <input type="text" id="name">
+
+
+    <label>Product: Slushie</label>
+    <select id="variant" name="variant">
+      <option value="">Select Patch Size</option>
+      <option value="value1" name="variant">Regular, 2x2 inches (PHP 20)</option>
+      <option value="value2" name="variant">Large, 2.5x2.5 inches (PHP 25)</option>
+    </select>
+
+
+    <label>Quantity:</label>
+    <input type="number" id="quantity">
+
+
+    <label>Pickup Method:</label>
+    <select id="pickup" name="picup">
+      <option value="">Select</option>
+      <option value="Delivery" name="picup">Delivery</option>
+      <option value="Meetup" name="picup">Meetup</option>
+    </select>
+
+
+    <label>Address (for delivery only):</label>
+    <input type="text" id="address">
+
+
+    <label>
+      <input type="checkbox" id="terms" name="terms"> I accept terms
+    </label>
+    <br><br>
+
+
+    <button type="button" onclick="loadPreviousOrder()">Load Previous Order</button>
+    <button type="submit">Submit</button>
+
+
+  </form>
+</div>
+
+
+<script>
+
+  // COOKIE FUNCTIONS
+  function setCookie(name, value, maxAge) {
+    document.cookie = name + "=" + value + "; max-age=" + maxAge + "; path=/";
+  }
+
+  function getCookie(name) {
+    var cookies = document.cookie.split("; ");
+    for (var i = 0; i < cookies.length; i++) {
+      var parts = cookies[i].split("=");
+      if (parts[0] === name) {
+        return parts[1]; 
+      }
+  }
+  return null;
+   
+  }
+
+
+  function deleteCookie(name) {
+    document.cookie = name + "=; max-age=0; path=/";
+  }
+
+  //note, variables are slushie themed becuase I didnt realize that it was supposed to be Stemfair output themed
+  function validateForm(){
+    var slushvar = document.getElementsByName("variant");
+    var slushvarS = false;
+    for (var i = 0; i < slushvar.length; i++) {
+      if (slushvar[i].selected) {
+        slushvarS = true;
+        break;
+      }
+    }
+    var picupvar = document.getElementsByName("picup");
+    var picupS = false;
+    for (var i = 0; i < picupvar.length; i++) {
+      if (picupvar[i].selected) {
+        picupS = true;
+        break;
+      }
+    }
+    var adres = true;
+    if (document.getElementById('pickup').value == "Delivery"){
+      if (document.getElementById('address').value ==""){
+        adres = false;
+      }
+    }
+
+    var TAS = document.getElementsByName("terms");
+    var TASS = false;
+    for (var i = 0; i < TAS.length; i++) {
+      if (TAS[i].checked) {
+        TASS = true;
+        break;
+      }
+    }
+
+
+
+    if(document.getElementById('name').value =="" || slushvarS === false || TASS ===false || picupS === false || adres ===false ||Number(document.getElementById('quantity').value)<=0 || document.getElementById('quantity').value==""){
+      document.getElementById("errorMsg").innerHTML = "Please fill out the required info!";
+      return false ;
+    }
+
+
+    return true;
+  }
+
+
+  // MAIN SUBMIT HANDLER
+  function handleOrder(event) {
+    event.preventDefault();
+    document.getElementById("errorMsg").innerHTML = "";
+
+    if(validateForm()===true){
+        var name = document.getElementById('name').value;
+        var variant = document.getElementById('variant').value;
+        var quan = Number(document.getElementById('quantity').value);
+        var pickup = document.getElementById('pickup').value;
+        var address = document.getElementById('address').value; 
+
+        setCookie("userName", name, 3600);
+        setCookie("userVariant", variant, 3600);
+        setCookie("userQuantity", quan, 3600);
+        setCookie("userPickup", pickup, 3600);
+
+        if (pickup === "Delivery") {
+          setCookie("userAddress", address, 3600);
+        }
+        
+      // Redirect to summary.html
+      window.location.href = "summary.html";
+      return true; 
+    }
+
+    return false;
+  }
+
+
+  // LOAD PREVIOUS ORDER
+  function loadPreviousOrder() {
+    var savedName = getCookie("userName");
+    var savedVariant = getCookie("userVariant");
+    var savedQuan = getCookie("userQuantity");
+    var savedPickup = getCookie("userPickup");
+    var savedAddress = getCookie("userAddress");
+
+    if (!savedName || !savedVariant) {
+      document.getElementById("errorMsg").innerHTML = "No previous order data found.";
+      return;
+    }
+
+    document.getElementById('name').value = savedName;
+    document.getElementById('variant').value = savedVariant;
+    document.getElementById('quantity').value = savedQuan;
+    document.getElementById('pickup').value = savedPickup;
+
+    if (savedAddress) {
+    document.getElementById('address').value = savedAddress;
+    }
+
+    document.getElementById("errorMsg").innerHTML = "";
+
+  }
+</script>
+
+
+</body>
+</html>
+
+
